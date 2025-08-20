@@ -3,7 +3,7 @@ name: Vote Service CI/CD
 on:
   push:
     paths:
-      - 'vote/**'   # Runs only if vote service changes
+      - 'example-voting-app/vote/**'   # Runs only if vote service changes
     branches: [ master ]
 
 jobs:
