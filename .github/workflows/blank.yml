@@ -1,0 +1,55 @@
+name: Vote Service CI/CD
+
+on:
+  push:
+    paths:
+      - 'vote/**'   # Runs only if vote service changes
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout Code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Log in to Azure
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}   # Service principal JSON
+
+      # 3. Log in to ACR
+      - name: ACR Login
+        uses: azure/docker-login@v2
+        with:
+          login-server: myregistry.azurecr.io        # <-- Replace with your ACR name
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      # 4. Build and Push Docker Image
+      - name: Build and Push Docker Image
+        run: |
+          cd vote
+          docker build -t myregistry.azurecr.io/vote:${{ github.sha }} .
+          docker push myregistry.azurecr.io/vote:${{ github.sha }}
+
+      # 5. Set AKS Context
+      - name: AKS Login
+        uses: azure/aks-set-context@v3
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          cluster-name: my-aks-cluster              # <-- Replace with your AKS cluster
+          resource-group: my-aks-rg                 # <-- Replace with your resource group
+
+      # 6. Deploy with kubectl (apply manifests)
+      - name: Deploy Vote Service
+        run: |
+          # Update image in deployment manifest dynamically
+          kubectl set image deployment/vote vote=myregistry.azurecr.io/vote:${{ github.sha }} --record
+          
+          # OR apply full manifests if they exist
+          kubectl apply -f k8s/vote/deployment.yaml
+          kubectl apply -f k8s/vote/service.yaml
