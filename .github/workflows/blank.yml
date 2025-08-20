@@ -33,7 +33,7 @@ jobs:
       - name: Build and Push Docker Image
         run: |
           cd vote
-          IMAGE=myregistry.azurecr.io/vote:${{ github.sha }}
+          IMAGE=myregistry1993.azurecr.io/vote:${{ github.sha }}
           docker build -t $IMAGE .
           docker push $IMAGE
 
@@ -46,7 +46,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           cluster-name: my-aks-cluster              # <-- Replace with your AKS cluster
-          resource-group: my-aks-rg                 # <-- Replace with your resource group
+          resource-group: SRINIVASA                 # <-- Replace with your resource group
 
       # 6. Deploy with kubectl (apply manifests)
       - name: Deploy Vote Service
