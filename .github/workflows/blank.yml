@@ -3,7 +3,9 @@ name: Vote Service CI/CD
 on:
   push:
     branches: [ master ]
-
+permissions:                # Required for OIDC
+  id-token: write
+  contents: read
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
