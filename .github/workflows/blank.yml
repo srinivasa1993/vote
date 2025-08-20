@@ -27,7 +27,7 @@ jobs:
 
       # 3. Log in to ACR (OIDC-based, no username/password needed)
       - name: ACR Login
-        run: az acr login --name myregistry   # <-- Replace with your ACR name only (no .azurecr.io)
+        run: az acr login --name myregistry1993   # <-- Replace with your ACR name only (no .azurecr.io)
 
       # 4. Build and Push Docker Image
       - name: Build and Push Docker Image
