@@ -32,7 +32,7 @@ jobs:
       # 4. Build and Push Docker Image
       - name: Build and Push Docker Image
         run: |
-          cd vote
+          cd example-voting-app
           IMAGE=myregistry1993.azurecr.io/vote:${{ github.sha }}
           docker build -t $IMAGE .
           docker push $IMAGE
